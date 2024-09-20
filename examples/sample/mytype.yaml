@@ -1,9 +1,7 @@
-apiVersion: sample.template.crossplane.io/v1alpha1
-kind: MyType
+apiVersion: wasmgroup.myprovider.io/v1alpha1
+kind: WASMType
 metadata:
-  name: example
+  name: example-wasm
 spec:
-  forProvider:
-    configurableField: test
-  providerConfigRef:
-    name: example
+  image: "ghcr.io/lucazini03/wasmedge-module:latest"
+  runtimeClassName: "wasmedge"

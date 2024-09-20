@@ -4,37 +4,20 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.14.0
-  name: mytypes.sample.template.crossplane.io
+  name: wasmtypes.wasmgroup.providerlucawasm.crossplane.io
 spec:
-  group: sample.template.crossplane.io
+  group: wasmgroup.providerlucawasm.crossplane.io
   names:
-    categories:
-    - crossplane
-    - managed
-    - template
-    kind: MyType
-    listKind: MyTypeList
-    plural: mytypes
-    singular: mytype
-  scope: Cluster
+    kind: WASMType
+    listKind: WASMTypeList
+    plural: wasmtypes
+    singular: wasmtype
+  scope: Namespaced
   versions:
-  - additionalPrinterColumns:
-    - jsonPath: .status.conditions[?(@.type=='Ready')].status
-      name: READY
-      type: string
-    - jsonPath: .status.conditions[?(@.type=='Synced')].status
-      name: SYNCED
-      type: string
-    - jsonPath: .metadata.annotations.crossplane\.io/external-name
-      name: EXTERNAL-NAME
-      type: string
-    - jsonPath: .metadata.creationTimestamp
-      name: AGE
-      type: date
-    name: v1alpha1
+  - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: A MyType is an example API type.
+        description: WASMType è il CR per il modulo Wasm.
         properties:
           apiVersion:
             description: |-
@@ -54,7 +37,8 @@ spec:
           metadata:
             type: object
           spec:
-            description: A MyTypeSpec defines the desired state of a MyType.
+            description: WASMTypeSpec definisce i parametri desiderati per il modulo
+              Wasm.
             properties:
               deletionPolicy:
                 default: Delete
@@ -70,14 +54,9 @@ spec:
                 - Orphan
                 - Delete
                 type: string
-              forProvider:
-                description: MyTypeParameters are the configurable fields of a MyType.
-                properties:
-                  configurableField:
-                    type: string
-                required:
-                - configurableField
-                type: object
+              image:
+                description: Modulo Wasm container image
+                type: string
               managementPolicies:
                 default:
                 - '*'
@@ -221,6 +200,9 @@ spec:
                 required:
                 - name
                 type: object
+              runtimeClassName:
+                description: Nome del runtime class per eseguire il modulo Wasm
+                type: string
               writeConnectionSecretToRef:
                 description: |-
                   WriteConnectionSecretToReference specifies the namespace and name of a
@@ -243,21 +225,13 @@ spec:
                 - namespace
                 type: object
             required:
-            - forProvider
+            - image
+            - runtimeClassName
             type: object
           status:
-            description: A MyTypeStatus represents the observed state of a MyType.
+            description: WASMTypeStatus rappresenta lo stato osservato del modulo
+              Wasm.
             properties:
-              atProvider:
-                description: MyTypeObservation are the observable fields of a MyType.
-                properties:
-                  configurableField:
-                    type: string
-                  observableField:
-                    type: string
-                required:
-                - configurableField
-                type: object
               conditions:
                 description: Conditions of the resource.
                 items:
@@ -317,5 +291,3 @@ spec:
         type: object
     served: true
     storage: true
-    subresources:
-      status: {}
